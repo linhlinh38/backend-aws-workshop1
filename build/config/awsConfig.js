@@ -23,11 +23,29 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.s3 = void 0;
+exports.jsonSecret = exports.s3 = void 0;
 const AWS = __importStar(require("aws-sdk"));
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
+const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
+const secret_name = "my-web-deploy-secret";
+const client = new client_secrets_manager_1.SecretsManagerClient({
+    region: "us-east-1",
 });
-exports.s3 = s3;
+let s3;
+let jsonSecret;
+(async () => {
+    try {
+        const secret = await client.send(new client_secrets_manager_1.GetSecretValueCommand({
+            SecretId: secret_name,
+            VersionStage: "AWSCURRENT",
+        }));
+        exports.jsonSecret = jsonSecret = JSON.parse(secret.SecretString);
+        exports.s3 = s3 = new AWS.S3({
+            accessKeyId: jsonSecret.AWS_ACCESS_KEY_ID,
+            secretAccessKey: jsonSecret.AWS_SECRET_ACCESS_KEY,
+            region: "us-east-1",
+        });
+    }
+    catch (error) {
+        throw error;
+    }
+})();
