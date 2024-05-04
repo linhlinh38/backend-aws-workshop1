@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { s3 } from "../config/awsConfig";
+import { s3, jsonSecret } from "../config/awsConfig";
 import fs from "fs";
 
 export const uploadImage = async (req: Request, res: Response) => {
@@ -13,7 +13,7 @@ export const uploadImage = async (req: Request, res: Response) => {
     const fileName = Date.now() + "_" + file.originalname;
     const fileContent = fs.readFileSync(file!.path);
     const putObjectRequest: AWS.S3.PutObjectRequest = {
-      Bucket: process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "",
+      Bucket: jsonSecret.BUCKET_NAME ? jsonSecret.BUCKET_NAME : "",
       Key: `images/${fileName}`,
       Body: fileContent,
       ContentType: file.mimetype,
@@ -34,14 +34,14 @@ export const uploadImage = async (req: Request, res: Response) => {
 export const getAllImagePreSignedUrls = async (req: Request, res: Response) => {
   try {
     const listObjectRequest: AWS.S3.ListObjectsV2Request = {
-      Bucket: process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "",
+      Bucket: jsonSecret.BUCKET_NAME ? jsonSecret.BUCKET_NAME : "",
       Prefix: "images/",
     };
 
     const data = await s3.listObjectsV2(listObjectRequest).promise();
     const urls = data.Contents?.map((item) => ({
       url: s3.getSignedUrl("getObject", {
-        Bucket: process.env.BUCKET_NAME,
+        Bucket: jsonSecret.BUCKET_NAME,
         Key: item.Key,
         ResponseContentDisposition: "inline",
       }),
@@ -60,7 +60,7 @@ export const deleteImage = async (req: Request, res: Response) => {
     const { fileName } = req.params;
 
     const deleteObjectRequest: AWS.S3.DeleteObjectRequest = {
-      Bucket: process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "",
+      Bucket: jsonSecret.BUCKET_NAME ? jsonSecret.BUCKET_NAME : "",
       Key: `images/${fileName}`,
     };
 
