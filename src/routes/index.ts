@@ -1,0 +1,28 @@
+import express from "express";
+import multer from "multer";
+
+import {
+  uploadImage,
+  getAllImagePreSignedUrls,
+  deleteImage,
+} from "../controllers/imageController";
+
+import { multerConfig } from "../config/multerConfig";
+
+const router = express.Router();
+
+// const upload = multer({
+//   storage: multerConfig.storage,
+//   fileFilter: multerConfig.fileFilter,
+// });
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
+const upload = multer({ dest: "uploads/" });
+
+router.post("/upload", upload.single("file"), uploadImage);
+router.get("/getAll", getAllImagePreSignedUrls);
+router.post("/delete/:fileName", deleteImage);
+
+export { router };
