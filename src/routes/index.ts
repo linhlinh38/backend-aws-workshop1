@@ -16,10 +16,15 @@ const router = express.Router();
 //   fileFilter: multerConfig.fileFilter,
 // });
 
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
+});
 
-const upload = multer({ dest: "uploads/" });
+//const upload = multer({ dest: "uploads/" });
 
 router.post("/upload", upload.single("file"), uploadImage);
 router.get("/getAll", getAllImagePreSignedUrls);

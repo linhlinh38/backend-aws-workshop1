@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jsonSecret = exports.s3 = void 0;
 const AWS = __importStar(require("aws-sdk"));
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
-const secret_name = "my-web-deploy-secret";
+const secret_name = "upload-image-to-s3-secret";
 const client = new client_secrets_manager_1.SecretsManagerClient({
     region: "us-east-1",
 });
