@@ -88,9 +88,7 @@ export const deleteImage = async (req: Request, res: Response) => {
       Key: `images/${fileName}`,
     });
 
-    await // The `.promise()` call might be on an JS SDK v2 client API.
-    // If yes, please remove .promise(). If not, remove this comment.
-    s3.send(deleteObjectRequest);
+    await s3.send(deleteObjectRequest);
 
     return res.json({ message: "Image deleted successfully" });
   } catch (error) {

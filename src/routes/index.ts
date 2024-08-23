@@ -11,11 +11,6 @@ import { multerConfig } from "../config/multerConfig";
 
 const router = express.Router();
 
-// const upload = multer({
-//   storage: multerConfig.storage,
-//   fileFilter: multerConfig.fileFilter,
-// });
-
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
@@ -23,8 +18,6 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024,
   },
 });
-
-//const upload = multer({ dest: "uploads/" });
 
 router.post("/upload", upload.single("file"), uploadImage);
 router.get("/getAll", getAllImagePreSignedUrls);
